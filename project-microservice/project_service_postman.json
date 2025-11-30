@@ -1,0 +1,75 @@
+{
+  "info": {
+    "_postman_id": "project-service-2025",
+    "name": "project-service - Gestión de Proyectos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Crear Proyecto",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Sistema de Gestión\",\n  \"modalidad\": \"INVESTIGACION\",\n  \"directorEmail\": \"docente@unicauca.edu.co\",\n  \"estudiante1Email\": \"estudiante@unicauca.edu.co\",\n  \"objetivoGeneral\": \"Desarrollar un sistema...\",\n  \"objetivosEspecificos\": \"1. Diseñar...\"\n}"
+        },
+        "url": "http://localhost:8082/api/proyectos"
+      }
+    },
+    {
+      "name": "Evaluar Proyecto (Aprobar)",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "http://localhost:8082/api/proyectos/1/evaluar?aprobado=true&observaciones=Proyecto aprobado.",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8082",
+          "path": ["api", "proyectos", "1", "evaluar"],
+          "query": [
+            { "key": "aprobado", "value": "true" },
+            { "key": "observaciones", "value": "Proyecto aprobado." }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reintentar Proyecto",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8082/api/proyectos/1/reintentar"
+      }
+    },
+    {
+      "name": "Subir Anteproyecto",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "http://localhost:8082/api/proyectos/1/anteproyecto?jefeDepartamentoEmail=jefe@unicauca.edu.co",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8082",
+          "path": ["api", "proyectos", "1", "anteproyecto"],
+          "query": [
+            { "key": "jefeDepartamentoEmail", "value": "jefe@unicauca.edu.co" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Obtener Proyectos por Estudiante",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/api/proyectos/estudiante/estudiante@unicauca.edu.co"
+      }
+    },
+    {
+      "name": "Obtener Anteproyectos por Jefe",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/api/proyectos/anteproyectos/jefe/jefe@unicauca.edu.co"
+      }
+    }
+  ]
+}

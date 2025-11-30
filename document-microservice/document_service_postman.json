@@ -1,0 +1,71 @@
+{
+  "info": {
+    "_postman_id": "document-service-unicauca-2025",
+    "name": "document-service - Gestión de Documentos",
+    "description": "Colección para probar el microservicio de documentos del sistema de Gestión de Proyectos de Grado.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Subir Formato A (PDF válido)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "idProyecto", "value": "1", "type": "text" },
+            { "key": "tipoDocumento", "value": "FORMATO_A", "type": "text" },
+            { "key": "archivo", "type": "file", "src": "formato_a_lleno.pdf" }
+          ]
+        },
+        "url": "http://localhost:8083/api/documentos/subir"
+      },
+      "response": []
+    },
+    {
+      "name": "Subir Anteproyecto (PDF válido)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "idProyecto", "value": "1", "type": "text" },
+            { "key": "tipoDocumento", "value": "ANTEPROYECTO", "type": "text" },
+            { "key": "archivo", "type": "file", "src": "anteproyecto.pdf" }
+          ]
+        },
+        "url": "http://localhost:8083/api/documentos/subir"
+      },
+      "response": []
+    },
+    {
+      "name": "Descargar Documento por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8083/api/documentos/descargar/1"
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener Documentos por Proyecto",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8083/api/documentos/proyecto/1"
+      },
+      "response": []
+    },
+    {
+      "name": "Descargar Plantilla del Formato A",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8083/api/documentos/plantilla/formato-a"
+      },
+      "response": []
+    }
+  ]
+}

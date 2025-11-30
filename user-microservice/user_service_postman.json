@@ -1,0 +1,140 @@
+{
+  "info": {
+    "_postman_id": "user-service-2025",
+    "name": "user-service - Gestión de Usuarios",
+    "description": "Colección completa para el microservicio de gestión de usuarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Registrar Docente",
+      "request": {
+        "method": "POST",
+        "header": [
+          { 
+            "key": "Content-Type", 
+            "value": "application/json" 
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"docente@unicauca.edu.co\",\n  \"password\": \"Pass123!\",\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"celular\": \"3101234567\",\n  \"programa\": \"INGENIERIA_SISTEMAS\",\n  \"tipoDocente\": \"PLANTA\"\n}"
+        },
+        "url": "http://localhost:8081/api/usuarios/docentes"
+      },
+      "response": []
+    },
+    {
+      "name": "Registrar Estudiante",
+      "request": {
+        "method": "POST",
+        "header": [
+          { 
+            "key": "Content-Type", 
+            "value": "application/json" 
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"estudiante@unicauca.edu.co\",\n  \"password\": \"Stud123!\",\n  \"nombres\": \"Ana\",\n  \"apellidos\": \"López\",\n  \"celular\": \"3209876543\",\n  \"programa\": \"INGENIERIA_SISTEMAS\"\n}"
+        },
+        "url": "http://localhost:8081/api/usuarios/estudiantes"
+      },
+      "response": []
+    },
+    {
+      "name": "Registrar Coordinador",
+      "request": {
+        "method": "POST",
+        "header": [
+          { 
+            "key": "Content-Type", 
+            "value": "application/json" 
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"coordinador@unicauca.edu.co\",\n  \"password\": \"Coord123!\",\n  \"nombres\": \"Carlos\",\n  \"apellidos\": \"Ramírez\",\n  \"celular\": \"3151122334\",\n  \"programa\": \"INGENIERIA_SISTEMAS\"\n}"
+        },
+        "url": "http://localhost:8081/api/usuarios/coordinadores"
+      },
+      "response": []
+    },
+    {
+      "name": "Registrar Jefe de Departamento",
+      "request": {
+        "method": "POST",
+        "header": [
+          { 
+            "key": "Content-Type", 
+            "value": "application/json" 
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"jefe@unicauca.edu.co\",\n  \"password\": \"Jefe123!\",\n  \"nombres\": \"María\",\n  \"apellidos\": \"Sánchez\",\n  \"celular\": \"3161122334\",\n  \"programa\": \"INGENIERIA_SISTEMAS\"\n}"
+        },
+        "url": "http://localhost:8081/api/usuarios/jefes-departamento"
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar Usuario por Email",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/usuarios/docente@unicauca.edu.co",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "usuarios", "docente@unicauca.edu.co"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Validar Usuario y Rol",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/usuarios/validar?email=docente@unicauca.edu.co",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "usuarios", "validar"],
+          "query": [
+            {
+              "key": "email",
+              "value": "docente@unicauca.edu.co"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar Usuario No Existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/usuarios/noexiste@unicauca.edu.co",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "usuarios", "noexiste@unicauca.edu.co"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    }
+  ]
+}

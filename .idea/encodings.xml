@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/MicroserviceFront/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceFront/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceLogin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceLogin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceNotification/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceNotification/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceProject/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceProject/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceStudent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MicroserviceStudent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/document-microservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/messaging-microservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-microservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/project-microservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-microservice/src/main/java" charset="UTF-8" />
+  </component>
+</project>

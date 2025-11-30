@@ -1,0 +1,40 @@
+{
+  "info": {
+    "_postman_id": "messaging-service-2025",
+    "name": "messaging-service - Mensajería Interna",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Enviar Mensaje",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "remitenteEmail", "value": "estudiante@unicauca.edu.co", "type": "text" },
+            { "key": "destinatariosEmail", "value": "docente@unicauca.edu.co", "type": "text" },
+            { "key": "asunto", "value": "Propuesta de Proyecto", "type": "text" },
+            { "key": "cuerpo", "value": "Estimado profesor, adjunto mi propuesta.", "type": "text" }
+          ]
+        },
+        "url": "http://localhost:8085/api/mensajes/enviar"
+      }
+    },
+    {
+      "name": "Mensajes Enviados",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8085/api/mensajes/enviados/estudiante@unicauca.edu.co"
+      }
+    },
+    {
+      "name": "Mensajes Recibidos",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8085/api/mensajes/recibidos/docente@unicauca.edu.co"
+      }
+    }
+  ]
+}
