@@ -25,6 +25,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dekstop-client" options="-parameters" />
       <module name="document-microservice" options="-parameters" />
       <module name="messaging-microservice" options="-parameters" />
       <module name="notification-microservice" options="-parameters" />
