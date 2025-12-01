@@ -8,6 +8,7 @@ import co.edu.unicauca.proyectos.models.estados.EnPrimeraEvaluacionState;
 import co.edu.unicauca.proyectos.dto.FormatoASubidoEvent;
 import co.edu.unicauca.proyectos.dto.AnteproyectoSubidoEvent;
 import co.edu.unicauca.proyectos.dto.EvaluacionFormatoAEvent;
+import co.edu.unicauca.proyectos.dto.AsignacionEvaluadoresEvent;
 import co.edu.unicauca.proyectos.services.evaluacion.EvaluadorAprobacion;
 import co.edu.unicauca.proyectos.services.evaluacion.EvaluadorRechazo;
 import co.edu.unicauca.proyectos.models.estados.FormatoAAprobadoState;
@@ -16,7 +17,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -25,13 +25,6 @@ import java.util.HashMap;
 @Service
 public class ProyectoServiceFacade implements IProyectoServiceFacade {
 
-    // Mensajería
-    private static final String EXCHANGE = "notificaciones.exchange";
-    private static final String RK_FORMATO_A_SUBIDO = "formatoA.subido";
-    private static final String RK_ANTEPROYECTO_SUBIDO = "anteproyecto.subido";
-    private static final String RK_FORMATO_A_EVALUADO = "formatoA.evaluado";
-    private static final String RK_EVALUADORES_ASIGNADOS = "evaluadores.asignados";
-
     // Dependencias
     private final ProyectoRepository proyectoRepository;
     private final IProyectoService proyectoService;
@@ -39,7 +32,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
     private final EvaluadorRechazo evaluadorRechazo;
     private final UsuariosClient userClient;
     private final DocumentosClient documentosClient;
-    private final RabbitTemplate rabbitTemplate;
+    private final INotificacionesClient notificacionesClient;
 
     public ProyectoServiceFacade(ProyectoRepository proyectoRepository,
                                  IProyectoService proyectoService,
@@ -47,14 +40,14 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
                                  EvaluadorRechazo evaluadorRechazo,
                                  UsuariosClient userClient,
                                  DocumentosClient documentosClient,
-                                 RabbitTemplate rabbitTemplate) {
+                                 INotificacionesClient notificacionesClient) {
         this.proyectoRepository = proyectoRepository;
         this.proyectoService = proyectoService;
         this.evaluadorAprobacion = evaluadorAprobacion;
         this.evaluadorRechazo = evaluadorRechazo;
         this.userClient = userClient;
         this.documentosClient = documentosClient;
-        this.rabbitTemplate = rabbitTemplate;
+        this.notificacionesClient = notificacionesClient;
     }
 
     @Override
@@ -92,7 +85,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setIdProyecto(p.getId());
         ev.setTitulo(p.getTitulo());
         ev.setCoordinadorEmail("coordinador.sistemas@unicauca.edu.co");
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_FORMATO_A_SUBIDO, ev);
+        notificacionesClient.notificarFormatoASubido(ev);
 
         Map<String, Object> respuesta = new HashMap<>();
         respuesta.put("idProyecto", p.getId());
@@ -126,7 +119,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         p.setEvaluador2Email(evaluador2Email);
         proyectoService.guardar(p);
 
-        var ev = new co.edu.unicauca.proyectos.dto.AsignacionEvaluadoresEvent();
+        AsignacionEvaluadoresEvent ev = new AsignacionEvaluadoresEvent();
         ev.setIdProyecto(p.getId());
         ev.setTitulo(p.getTitulo());
         ev.setJefeDepartamentoEmail(jefeDepartamentoEmail);
@@ -137,7 +130,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setDirectorEmail(p.getDirectorEmail());
         ev.setCodirectorEmail(p.getCodirectorEmail());
 
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_EVALUADORES_ASIGNADOS, ev);
+        notificacionesClient.notificarAsignacionEvaluadores(ev);
 
         return ResponseEntity.ok(Map.of(
                 "idProyecto", p.getId(),
@@ -145,7 +138,6 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
                 "evaluador2", evaluador2Email
         ));
     }
-
 
     @Override
     public ProyectoGrado crearProyecto(ProyectoGrado proyecto) {
@@ -164,7 +156,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setIdProyecto(guardado.getId());
         ev.setTitulo(guardado.getTitulo());
         ev.setCoordinadorEmail("coordinador.sistemas@unicauca.edu.co");
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_FORMATO_A_SUBIDO, ev);
+        notificacionesClient.notificarFormatoASubido(ev);
 
         return guardado;
     }
@@ -182,7 +174,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         }
         proyectoService.guardar(p);
 
-        var ev = new EvaluacionFormatoAEvent();
+        EvaluacionFormatoAEvent ev = new EvaluacionFormatoAEvent();
         ev.setIdProyecto(p.getId());
         ev.setTitulo(p.getTitulo());
         ev.setAprobado(aprobado);
@@ -193,7 +185,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setCodirectorEmail(p.getCodirectorEmail());
         ev.setCoordinadorEmail("coordinador.sistemas@unicauca.edu.co");
 
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_FORMATO_A_EVALUADO, ev);
+        notificacionesClient.notificarEvaluacionFormatoA(ev);
     }
 
     @Override
@@ -207,7 +199,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setIdProyecto(p.getId());
         ev.setTitulo(p.getTitulo());
         ev.setCoordinadorEmail("coordinador.sistemas@unicauca.edu.co");
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_FORMATO_A_SUBIDO, ev);
+        notificacionesClient.notificarFormatoASubido(ev);
     }
 
     @Override
@@ -232,6 +224,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
             String anteproyectoToken = documentosClient.subir(idProyecto, "ANTEPROYECTO", anteproyectoPdf);
 
             p.setAnteproyectoToken(anteproyectoToken);
+            p.setFechaAnteproyecto(java.time.LocalDate.now());
             proyectoService.guardar(p);
 
             AnteproyectoSubidoEvent ev = new AnteproyectoSubidoEvent();
@@ -240,11 +233,10 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
             ev.setJefeDepartamentoEmail(jefeDepartamentoEmail);
             ev.setEstudianteEmail(p.getEstudiante1Email());
             ev.setTutor1Email(p.getDirectorEmail());
-            p.setFechaAnteproyecto(java.time.LocalDate.now());
             if (p.getCodirectorEmail() != null && !p.getCodirectorEmail().isEmpty()) {
                 ev.setTutor2Email(p.getCodirectorEmail());
             }
-            rabbitTemplate.convertAndSend(EXCHANGE, RK_ANTEPROYECTO_SUBIDO, ev);
+            notificacionesClient.notificarAnteproyectoSubido(ev);
 
             Map<String, Object> respuesta = new HashMap<>();
             respuesta.put("idProyecto", p.getId());
@@ -299,7 +291,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         ev.setDirectorEmail(p.getDirectorEmail());
         ev.setCodirectorEmail(p.getCodirectorEmail());
         ev.setCoordinadorEmail("coordinador.sistemas@unicauca.edu.co");
-        rabbitTemplate.convertAndSend(EXCHANGE, RK_FORMATO_A_EVALUADO, ev);
+        notificacionesClient.notificarEvaluacionFormatoA(ev);
 
         return p;
     }
