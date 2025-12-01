@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import co.edu.unicauca.proyectos.models.ProyectoGrado;
 import co.edu.unicauca.proyectos.dto.ProyectoRequest;
@@ -54,6 +55,7 @@ public class ProyectoController {
                     )
             )
     )
+    @PreAuthorize("hasRole('DOCENTE')")
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody ProyectoRequest request) {
         try {
@@ -74,10 +76,13 @@ public class ProyectoController {
         }
     }
 
+
+
     @Operation(
             summary = "Subir Formato A",
             description = "Recibe el PDF del Formato A y la carta (obligatoria si la modalidad es PRACTICA_PROFESIONAL)."
     )
+    @PreAuthorize("hasRole('DOCENTE')")
     @PostMapping(value="/formatoA", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> subirFormatoA(
             @RequestParam("titulo") String titulo,
@@ -95,6 +100,7 @@ public class ProyectoController {
             summary = "Evaluar un proyecto de grado",
             description = "Cambia el estado de un proyecto de grado a aprobado o rechazado y envía una notificación a los implicados."
     )
+    @PreAuthorize("hasRole('COORDINADOR')")
     @PostMapping("/{id}/evaluar")
     public ResponseEntity<?> evaluarProyecto(@PathVariable("id") Long id,
                                              @RequestParam("aprobado") boolean aprobado,
@@ -116,6 +122,7 @@ public class ProyectoController {
             description = "Permite al docente subir el archivo PDF del anteproyecto una vez el Formato A ha sido aprobado. " +
                     "Envía notificación al jefe de departamento para asignar evaluadores."
     )
+    @PreAuthorize("hasRole('DOCENTE')")
     @PostMapping(value="/{idProyecto}/anteproyecto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> subirAnteproyecto(
             @PathVariable("idProyecto") Long idProyecto,
@@ -128,6 +135,7 @@ public class ProyectoController {
             summary = "Obtener proyectos por estudiante",
             description = "Recupera todos los proyectos asociados a un estudiante específico."
     )
+    @PreAuthorize("hasRole('ESTUDIANTE')")
     @GetMapping("/estudiante/{email}")
     public ResponseEntity<?> obtenerPorEstudiante(@PathVariable String email) {
         try {
@@ -142,6 +150,7 @@ public class ProyectoController {
             summary = "Obtener anteproyectos para evaluación (Jefe de Departamento)",
             description = "Recupera todos los proyectos que tienen anteproyecto subido y están pendientes de asignación de evaluadores."
     )
+    @PreAuthorize("hasRole('JEFE_DEPARTAMENTO')")
     @GetMapping("/anteproyectos/jefe/{emailJefe}")
     public ResponseEntity<?> obtenerAnteproyectosPorJefe(@PathVariable("emailJefe") String emailJefe) {
         try {
@@ -157,6 +166,7 @@ public class ProyectoController {
             summary = "Reintentar un proyecto de grado",
             description = "Permite subir una nueva versión del Formato A tras un rechazo."
     )
+    @PreAuthorize("hasRole('DOCENTE')")
     @PostMapping("/{id}/reintentar")
     public ResponseEntity<?> reintentarProyecto(@PathVariable Long id) {
         try {
@@ -171,6 +181,7 @@ public class ProyectoController {
             summary = "Obtener proyecto por ID",
             description = "Recupera los detalles completos de un proyecto específico por su identificador."
     )
+    @PreAuthorize("hasAnyRole('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProyectoPorId(@PathVariable Long id) {
         try {
@@ -186,6 +197,7 @@ public class ProyectoController {
             summary = "Obtener estado del proyecto",
             description = "Devuelve estado actual, intentos y últimas observaciones."
     )
+    @PreAuthorize("hasAnyRole('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
     @GetMapping(path = "/{id}/estado", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> estado(@PathVariable Long id){
         ProyectoGrado p = facade.obtenerProyectoPorId(id);
@@ -199,6 +211,7 @@ public class ProyectoController {
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasRole('JEFE_DEPARTAMENTO')")
     @PostMapping("/{idProyecto}/evaluadores")
     public ResponseEntity<?> asignarEvaluadores(
             @PathVariable("idProyecto") Long idProyecto,
@@ -207,6 +220,5 @@ public class ProyectoController {
             @RequestParam("evaluador2Email") String evaluador2Email) {
         return facade.asignarEvaluadores(idProyecto, jefeDepartamentoEmail, evaluador1Email, evaluador2Email);
     }
-
 
 }
