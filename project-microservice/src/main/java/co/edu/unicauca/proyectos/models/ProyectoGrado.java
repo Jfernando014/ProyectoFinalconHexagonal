@@ -6,6 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import co.edu.unicauca.proyectos.models.estados.*;
 
+/**
+ * Agregado raíz del dominio de proyectos de grado.
+ * Contiene la lógica de negocio principal (estado, intentos, etc.)
+ * conforme a Domain-Driven Design (DDD).
+ */
+
 @Entity
 @Table(name = "proyectos")
 @Data
