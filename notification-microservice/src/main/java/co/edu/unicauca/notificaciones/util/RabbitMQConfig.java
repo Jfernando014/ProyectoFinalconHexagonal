@@ -36,6 +36,12 @@ public class RabbitMQConfig {
     @Value("${app.rabbitmq.rk.anteproyecto.subido}")
     private String rkAnteproyectoSubido;
 
+    @Value("${app.rabbitmq.queue.evaluadores.asignados}")
+    private String evaluadoresAsignadosQueueName;
+
+    @Value("${app.rabbitmq.rk.evaluadores.asignados}")
+    private String evaluadoresAsignadosRoutingKey;
+
     // 1) Exchange DIRECT (coincide con el que ya existe en el broker)
     @Bean
     public DirectExchange notificacionesExchange() {
@@ -92,6 +98,20 @@ public class RabbitMQConfig {
         f.setConnectionFactory(cf);
         f.setMessageConverter(mc);
         return f;
+    }
+
+    @Bean
+    public Queue evaluadoresAsignadosQueue() {
+        return QueueBuilder.durable(evaluadoresAsignadosQueueName).build();
+    }
+
+    @Bean
+    public Binding evaluadoresAsignadosBinding(DirectExchange notificacionesExchange,
+                                               Queue evaluadoresAsignadosQueue) {
+        return BindingBuilder
+                .bind(evaluadoresAsignadosQueue)
+                .to(notificacionesExchange)
+                .with(evaluadoresAsignadosRoutingKey);
     }
 
 }
