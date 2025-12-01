@@ -11,6 +11,8 @@
     <file url="file://$PROJECT_DIR$/MicroserviceProject/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MicroserviceStudent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MicroserviceStudent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/desktop-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/desktop-client/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/document-microservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/messaging-microservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/notification-microservice/src/main/java" charset="UTF-8" />

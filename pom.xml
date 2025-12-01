@@ -15,6 +15,7 @@
         <module>notification-microservice</module>
         <module>messaging-microservice</module>
         <module>document-microservice</module>
+        <module>desktop-client</module>
     </modules>
 
     <!-- El padre del ROOT es Spring Boot -->

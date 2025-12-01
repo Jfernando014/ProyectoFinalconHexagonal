@@ -19,6 +19,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="project-microservice" />
         <module name="usuarios-microservice" />
+        <module name="dekstop-client" />
       </profile>
     </annotationProcessing>
   </component>
