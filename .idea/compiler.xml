@@ -19,9 +19,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="project-microservice" />
         <module name="usuarios-microservice" />
-        <module name="dekstop-client" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dekstop-client" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
