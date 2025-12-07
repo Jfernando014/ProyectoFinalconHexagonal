@@ -16,23 +16,23 @@ public class JwtTokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:mySuperSecretKeyForJWTGeneration1234567890}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:86400000}")
     private long jwtExpirationMs;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email, String rol) {
+    public String generateToken(String email, String roles) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .setSubject(email)
-                .claim("rol", rol)
+                .claim("roles", roles)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -48,14 +48,19 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public String getRolFromToken(String token) {
-        Object rol = Jwts.parserBuilder()
+    public String getRolesFromToken(String token) {
+        Object roles = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("rol");
-        return rol != null ? rol.toString() : null;
+                .get("roles");
+        return roles != null ? roles.toString() : null;
+    }
+
+    // Mantener el método antiguo por compatibilidad
+    public String getRolFromToken(String token) {
+        return getRolesFromToken(token);
     }
 
     public boolean validateToken(String token) {

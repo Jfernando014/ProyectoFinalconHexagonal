@@ -1,110 +1,172 @@
 package co.edu.unicauca.usuarios.vista;
 
-import co.edu.unicauca.usuarios.dto.CoordinadorRequest;
-import co.edu.unicauca.usuarios.dto.DocenteRequest;
-import co.edu.unicauca.usuarios.dto.EstudianteRequest;
-import co.edu.unicauca.usuarios.dto.JefeDepartamentoRequest;
-import co.edu.unicauca.usuarios.models.*;
+import co.edu.unicauca.usuarios.dto.*;
+import co.edu.unicauca.usuarios.models.Usuario;
+import co.edu.unicauca.usuarios.models.enums.Rol;
+import co.edu.unicauca.usuarios.models.enums.TipoDocente;
 import co.edu.unicauca.usuarios.services.IUsuarioService;
 import co.edu.unicauca.usuarios.util.InvalidUserDataException;
 import co.edu.unicauca.usuarios.util.UserAlreadyExistsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     private final IUsuarioService usuarioService;
-    public UsuarioController(IUsuarioService usuarioService){ this.usuarioService = usuarioService; }
 
-    // ------- Registro -------
+    public UsuarioController(IUsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
+    // ------- Registro Único para múltiples roles -------
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrarUsuario(@RequestBody RegistroUsuarioDTO req) {
+        try {
+            // Validar que al menos tenga un rol
+            if (req.getRoles() == null || req.getRoles().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Debe especificar al menos un rol"));
+            }
+
+            // Validar que si tiene rol DOCENTE, debe tener tipoDocente
+            if (req.getRoles().contains(Rol.DOCENTE) && req.getTipoDocente() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Para el rol DOCENTE debe especificar el tipo de docente"));
+            }
+
+            // Validar que si NO tiene rol DOCENTE, no debe tener tipoDocente
+            if (!req.getRoles().contains(Rol.DOCENTE) && req.getTipoDocente() != null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "El tipo de docente solo aplica para usuarios con rol DOCENTE"));
+            }
+
+            // Crear el usuario
+            Usuario usuario = new Usuario();
+            usuario.setEmail(req.getEmail());
+            usuario.setPassword(req.getPassword());
+            usuario.setNombres(req.getNombres());
+            usuario.setApellidos(req.getApellidos());
+            usuario.setCelular(req.getCelular());
+            usuario.setPrograma(req.getPrograma());
+            usuario.setTipoDocente(req.getTipoDocente());
+            usuario.setRoles(req.getRoles());
+
+            Usuario saved = usuarioService.registrarUsuario(usuario);
+
+            // Preparar respuesta
+            Map<String, Object> response = new HashMap<>();
+            response.put("email", saved.getEmail());
+            response.put("nombres", saved.getNombres());
+            response.put("apellidos", saved.getApellidos());
+            response.put("roles", saved.getRoles());
+            if (saved.getTipoDocente() != null) {
+                response.put("tipoDocente", saved.getTipoDocente());
+            }
+
+            return ResponseEntity.ok(response);
+
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El usuario ya existe: " + e.getMessage()));
+        } catch (InvalidUserDataException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Datos inválidos: " + e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error interno: " + e.getMessage()));
+        }
+    }
+
+    // ------- Endpoints específicos para compatibilidad -------
     @PostMapping("/docentes")
     public ResponseEntity<?> registrarDocente(@RequestBody DocenteRequest req) {
-        try {
-            Docente d = new Docente();
-            d.setEmail(req.getEmail());
-            d.setPassword(req.getPassword());
-            d.setNombres(req.getNombres());
-            d.setApellidos(req.getApellidos());
-            d.setCelular(req.getCelular());
-            d.setPrograma(req.getPrograma());
-            d.setTipoDocente(req.getTipoDocente());
-            var saved = usuarioService.registrarDocente(d);
-            return ResponseEntity.ok(Map.of("email", saved.getEmail(), "rol", "DOCENTE"));
-        } catch (UserAlreadyExistsException | InvalidUserDataException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        RegistroUsuarioDTO dto = new RegistroUsuarioDTO();
+        dto.setEmail(req.getEmail());
+        dto.setPassword(req.getPassword());
+        dto.setNombres(req.getNombres());
+        dto.setApellidos(req.getApellidos());
+        dto.setCelular(req.getCelular());
+        dto.setPrograma(req.getPrograma());
+        dto.setRoles(Set.of(Rol.DOCENTE));
+        dto.setTipoDocente(req.getTipoDocente());
+
+        return registrarUsuario(dto);
     }
 
     @PostMapping("/estudiantes")
     public ResponseEntity<?> registrarEstudiante(@RequestBody EstudianteRequest req) {
-        try {
-            Estudiante e = new Estudiante();
-            e.setEmail(req.getEmail());
-            e.setPassword(req.getPassword());
-            e.setNombres(req.getNombres());
-            e.setApellidos(req.getApellidos());
-            e.setCelular(req.getCelular());
-            e.setPrograma(req.getPrograma());
-            var saved = usuarioService.registrarEstudiante(e);
-            return ResponseEntity.ok(Map.of("email", saved.getEmail(), "rol", "ESTUDIANTE"));
-        } catch (UserAlreadyExistsException | InvalidUserDataException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        RegistroUsuarioDTO dto = new RegistroUsuarioDTO();
+        dto.setEmail(req.getEmail());
+        dto.setPassword(req.getPassword());
+        dto.setNombres(req.getNombres());
+        dto.setApellidos(req.getApellidos());
+        dto.setCelular(req.getCelular());
+        dto.setPrograma(req.getPrograma());
+        dto.setRoles(Set.of(Rol.ESTUDIANTE));
+
+        return registrarUsuario(dto);
     }
 
     @PostMapping("/coordinadores")
     public ResponseEntity<?> registrarCoordinador(@RequestBody CoordinadorRequest req) {
-        try {
-            Coordinador c = new Coordinador();
-            c.setEmail(req.getEmail());
-            c.setPassword(req.getPassword());
-            c.setNombres(req.getNombres());
-            c.setApellidos(req.getApellidos());
-            c.setCelular(req.getCelular());
-            c.setPrograma(req.getPrograma());
-            var saved = usuarioService.registrarCoordinador(c);
-            return ResponseEntity.ok(Map.of("email", saved.getEmail(), "rol", "COORDINADOR"));
-        } catch (UserAlreadyExistsException | InvalidUserDataException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        RegistroUsuarioDTO dto = new RegistroUsuarioDTO();
+        dto.setEmail(req.getEmail());
+        dto.setPassword(req.getPassword());
+        dto.setNombres(req.getNombres());
+        dto.setApellidos(req.getApellidos());
+        dto.setCelular(req.getCelular());
+        dto.setPrograma(req.getPrograma());
+        dto.setRoles(Set.of(Rol.COORDINADOR));
+
+        return registrarUsuario(dto);
     }
 
     @PostMapping("/jefes-departamento")
     public ResponseEntity<?> registrarJefe(@RequestBody JefeDepartamentoRequest req) {
-        try {
-            JefeDepartamento j = new JefeDepartamento();
-            j.setEmail(req.getEmail());
-            j.setPassword(req.getPassword());
-            j.setNombres(req.getNombres());
-            j.setApellidos(req.getApellidos());
-            j.setCelular(req.getCelular());
-            j.setPrograma(req.getPrograma());
-            var saved = usuarioService.registrarJefeDepartamento(j);
-            return ResponseEntity.ok(Map.of("email", saved.getEmail(), "rol", "JEFE_DEPARTAMENTO"));
-        } catch (UserAlreadyExistsException | InvalidUserDataException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        RegistroUsuarioDTO dto = new RegistroUsuarioDTO();
+        dto.setEmail(req.getEmail());
+        dto.setPassword(req.getPassword());
+        dto.setNombres(req.getNombres());
+        dto.setApellidos(req.getApellidos());
+        dto.setCelular(req.getCelular());
+        dto.setPrograma(req.getPrograma());
+        dto.setRoles(Set.of(Rol.JEFE_DEPARTAMENTO));
+
+        return registrarUsuario(dto);
     }
 
     // ------- Validación cruzada para otros MS -------
-
     @GetMapping("/validar")
-    public ResponseEntity<?> validar(@RequestParam("email") String email){
+    public ResponseEntity<?> validar(@RequestParam("email") String email) {
         boolean existe = usuarioService.existeUsuario(email);
-        String rol = usuarioService.obtenerRol(email);
-        return ResponseEntity.ok(Map.of("existe", existe, "rol", existe ? rol : null));
+        Set<Rol> roles = usuarioService.obtenerTodosRoles(email);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("existe", existe);
+        if (existe) {
+            response.put("roles", roles);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{email}")
     public ResponseEntity<?> obtenerUsuario(@PathVariable("email") String email) {
         try {
             var usuario = usuarioService.obtenerPorEmail(email);
-            return ResponseEntity.ok(usuario);
+            Map<String, Object> response = new HashMap<>();
+            response.put("email", usuario.getEmail());
+            response.put("nombres", usuario.getNombres());
+            response.put("apellidos", usuario.getApellidos());
+            response.put("celular", usuario.getCelular());
+            response.put("programa", usuario.getPrograma());
+            response.put("roles", usuario.getRoles());
+
+            if (usuario.getTipoDocente() != null) {
+                response.put("tipoDocente", usuario.getTipoDocente());
+            }
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
         }

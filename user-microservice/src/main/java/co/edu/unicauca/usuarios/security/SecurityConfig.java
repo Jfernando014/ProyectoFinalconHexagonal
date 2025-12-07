@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -33,17 +33,18 @@ public class SecurityConfig {
                         // Endpoints públicos
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/usuarios/registro",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/h2-console/**"
                         ).permitAll()
-                        // Registro de usuarios también público
+
                         .requestMatchers(HttpMethod.POST,
                                 "/api/usuarios/docentes",
                                 "/api/usuarios/estudiantes",
                                 "/api/usuarios/coordinadores",
-                                "/api/usuarios/jefes"
+                                "/api/usuarios/jefes-departamento"
                         ).permitAll()
                         // Todo lo demás requiere JWT válido
                         .anyRequest().authenticated()
@@ -60,8 +61,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Para el curso, mantienes las contraseñas en texto plano.
-        // Si quieres mejorar, cambia a new BCryptPasswordEncoder().
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }

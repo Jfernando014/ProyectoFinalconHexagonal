@@ -1,6 +1,5 @@
 package co.edu.unicauca.usuarios.services;
 
-import co.edu.unicauca.usuarios.models.Docente;
 import co.edu.unicauca.usuarios.models.Usuario;
 import co.edu.unicauca.usuarios.repository.UsuarioRepository;
 import co.edu.unicauca.usuarios.util.InvalidUserDataException;
