@@ -235,7 +235,7 @@ public class ProyectoController {
             summary = "Obtener proyecto por ID",
             description = "Recupera los detalles completos de un proyecto específico por su identificador."
     )
-    @PreAuthorize("hasAnyRole('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
+    @PreAuthorize("hasAnyAuthority('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProyectoPorId(@PathVariable Long id) {
         try {
@@ -251,7 +251,7 @@ public class ProyectoController {
             summary = "Obtener estado del proyecto",
             description = "Devuelve estado actual, intentos y últimas observaciones."
     )
-    @PreAuthorize("hasAnyRole('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
+    @PreAuthorize("hasAnyAuthority('DOCENTE','ESTUDIANTE','COORDINADOR','JEFE_DEPARTAMENTO')")
     @GetMapping(path = "/{id}/estado", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> estado(@PathVariable Long id){
         ProyectoGrado p = facade.obtenerProyectoPorId(id);

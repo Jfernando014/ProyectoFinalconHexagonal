@@ -51,7 +51,6 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         this.notificacionesClient = notificacionesClient;
     }
 
-    @Override
     public ResponseEntity<?> subirFormatoA(
             String titulo,
             String modalidad,
@@ -61,13 +60,11 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
             MultipartFile pdf,
             MultipartFile carta
     ){
-        if ("PRACTICA_PROFESIONAL".equalsIgnoreCase(modalidad) && (carta == null || carta.isEmpty())) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Se requiere carta de aceptación"));
+        if ("PRACTICA_PROFESIONAL".equalsIgnoreCase(modalidad)
+                && (carta == null || carta.isEmpty())) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Se requiere carta de aceptación"));
         }
-
-        String formatoTok = documentosClient.subir(0L, "FORMATO_A", pdf);
-        String cartaTok = (carta != null && !carta.isEmpty())
-                ? documentosClient.subir(0L, "CARTA_EMPRESA", carta) : null;
 
         ProyectoGrado p = new ProyectoGrado();
         p.setTitulo(titulo);
@@ -75,13 +72,20 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         p.setDirectorEmail(directorEmail);
         p.setCodirectorEmail(codirectorEmail);
         p.setEstudiante1Email(estudiante1Email);
-        p.setFormatoAToken(formatoTok);
-        p.setCartaToken(cartaTok);
         p.setFechaFormatoA(java.time.LocalDate.now());
 
         p = proyectoRepository.save(p);
 
-        // evento
+        String formatoTok = documentosClient.subir(p.getId(), "FORMATO_A", pdf);
+
+        String cartaTok = (carta != null && !carta.isEmpty())
+                ? documentosClient.subir(p.getId(), "CARTA_EMPRESA", carta)
+                : null;
+
+        p.setFormatoAToken(formatoTok);
+        p.setCartaToken(cartaTok);
+        p = proyectoRepository.save(p);
+
         FormatoASubidoEvent ev = new FormatoASubidoEvent();
         ev.setIdProyecto(p.getId());
         ev.setTitulo(p.getTitulo());
@@ -92,8 +96,10 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         respuesta.put("idProyecto", p.getId());
         respuesta.put("formatoAToken", formatoTok);
         if (cartaTok != null) respuesta.put("cartaToken", cartaTok);
+
         return ResponseEntity.ok(respuesta);
     }
+
 
     private void validarUsuario(String email, String rolEsperado) {
         Map<String, Object> r = userClient.validarUsuario(email);
