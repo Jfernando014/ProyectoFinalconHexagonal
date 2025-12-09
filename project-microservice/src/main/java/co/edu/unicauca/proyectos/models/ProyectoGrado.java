@@ -3,6 +3,7 @@ package co.edu.unicauca.proyectos.models;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import co.edu.unicauca.proyectos.models.estados.*;
 
@@ -30,6 +31,8 @@ public class ProyectoGrado {
 
     private String evaluador1Email;
     private String evaluador2Email;
+    private boolean FormatA;
+
 
     @Column(length = 2000)
     private String objetivoGeneral;

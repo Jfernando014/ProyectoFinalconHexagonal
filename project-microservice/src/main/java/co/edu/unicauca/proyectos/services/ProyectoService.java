@@ -53,4 +53,14 @@ public class ProyectoService implements IProyectoService {
     public List<ProyectoGrado> findByAnteproyectoTokenIsNotNull() {
         return repo.findByAnteproyectoTokenIsNotNull();
     }
+
+    @Override
+    public List<ProyectoGrado> obtenerFormatoAPendientes() {
+        return proyectoRepository.findByEstadoActualIn(List.of(
+                "EN_PRIMERA_EVALUACION_FORMATO_A",
+                "EN_SEGUNDA_EVALUACION_FORMATO_A",
+                "EN_TERCERA_EVALUACION_FORMATO_A"
+        ));
+    }
+
 }

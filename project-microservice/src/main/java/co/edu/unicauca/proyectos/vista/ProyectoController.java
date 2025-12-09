@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
@@ -69,7 +68,7 @@ public class ProyectoController {
             proyecto.setEstudiante2Email(request.getEstudiante2Email());
             proyecto.setObjetivoGeneral(request.getObjetivoGeneral());
             proyecto.setObjetivosEspecificos(request.getObjetivosEspecificos());
-
+            proyecto.setFormatA(false);
             ProyectoGrado resultado = facade.crearProyecto(proyecto);
             return ResponseEntity.ok(resultado);
         } catch (Exception e) {
@@ -273,6 +272,12 @@ public class ProyectoController {
             @RequestParam("evaluador1Email") String evaluador1Email,
             @RequestParam("evaluador2Email") String evaluador2Email) {
         return facade.asignarEvaluadores(idProyecto, jefeDepartamentoEmail, evaluador1Email, evaluador2Email);
+    }
+
+    @PreAuthorize("hasAuthority('COORDINADOR')")
+    @GetMapping("/formatoA/pendientes")
+    public List<ProyectoGrado> obtenerFormatoAPendientes() {
+        return facade.obtenerFormatoAPendientes();
     }
 
 }

@@ -9,6 +9,7 @@ public interface IProyectoService {
     List<ProyectoGrado> findByEstudiante1Email(String email);
     List<ProyectoGrado> findByDirectorEmail(String email);
     List<ProyectoGrado> findByAnteproyectoTokenIsNotNull();
+    List<ProyectoGrado> obtenerFormatoAPendientes();
     List<ProyectoGrado> obtenerTodos();
     ProyectoGrado guardar(ProyectoGrado proyecto);
 }

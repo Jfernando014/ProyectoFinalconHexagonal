@@ -17,7 +17,7 @@ public interface IProyectoServiceFacade {
             MultipartFile pdf,
             MultipartFile carta
     );
-    
+    List<ProyectoGrado> obtenerFormatoAPendientes();
     ProyectoGrado crearProyecto(ProyectoGrado proyecto);
     
     void evaluarProyecto(Long id, boolean aprobado, String observaciones);

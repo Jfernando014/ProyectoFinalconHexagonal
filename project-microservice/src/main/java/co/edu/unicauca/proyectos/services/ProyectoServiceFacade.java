@@ -73,6 +73,8 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         p.setCodirectorEmail(codirectorEmail);
         p.setEstudiante1Email(estudiante1Email);
         p.setFechaFormatoA(java.time.LocalDate.now());
+        p.setFormatA(true);
+
 
         p = proyectoRepository.save(p);
 
@@ -98,6 +100,11 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         if (cartaTok != null) respuesta.put("cartaToken", cartaTok);
 
         return ResponseEntity.ok(respuesta);
+    }
+
+    @Override
+    public List<ProyectoGrado> obtenerFormatoAPendientes() {
+        return proyectoService.obtenerFormatoAPendientes();
     }
 
 
