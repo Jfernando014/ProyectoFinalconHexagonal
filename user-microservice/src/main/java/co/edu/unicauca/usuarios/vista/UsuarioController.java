@@ -3,7 +3,6 @@ package co.edu.unicauca.usuarios.vista;
 import co.edu.unicauca.usuarios.dto.*;
 import co.edu.unicauca.usuarios.models.Usuario;
 import co.edu.unicauca.usuarios.models.enums.Rol;
-import co.edu.unicauca.usuarios.models.enums.TipoDocente;
 import co.edu.unicauca.usuarios.services.IUsuarioService;
 import co.edu.unicauca.usuarios.util.InvalidUserDataException;
 import co.edu.unicauca.usuarios.util.UserAlreadyExistsException;
@@ -33,16 +32,6 @@ public class UsuarioController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Debe especificar al menos un rol"));
             }
 
-            // Validar que si tiene rol DOCENTE, debe tener tipoDocente
-            if (req.getRoles().contains(Rol.DOCENTE) && req.getTipoDocente() == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Para el rol DOCENTE debe especificar el tipo de docente"));
-            }
-
-            // Validar que si NO tiene rol DOCENTE, no debe tener tipoDocente
-            if (!req.getRoles().contains(Rol.DOCENTE) && req.getTipoDocente() != null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "El tipo de docente solo aplica para usuarios con rol DOCENTE"));
-            }
-
             // Crear el usuario
             Usuario usuario = new Usuario();
             usuario.setEmail(req.getEmail());
@@ -51,7 +40,6 @@ public class UsuarioController {
             usuario.setApellidos(req.getApellidos());
             usuario.setCelular(req.getCelular());
             usuario.setPrograma(req.getPrograma());
-            usuario.setTipoDocente(req.getTipoDocente());
             usuario.setRoles(req.getRoles());
 
             Usuario saved = usuarioService.registrarUsuario(usuario);
@@ -62,9 +50,6 @@ public class UsuarioController {
             response.put("nombres", saved.getNombres());
             response.put("apellidos", saved.getApellidos());
             response.put("roles", saved.getRoles());
-            if (saved.getTipoDocente() != null) {
-                response.put("tipoDocente", saved.getTipoDocente());
-            }
 
             return ResponseEntity.ok(response);
 
@@ -77,7 +62,6 @@ public class UsuarioController {
         }
     }
 
-    // ------- Endpoints específicos para compatibilidad -------
     @PostMapping("/docentes")
     public ResponseEntity<?> registrarDocente(@RequestBody DocenteRequest req) {
         RegistroUsuarioDTO dto = new RegistroUsuarioDTO();
@@ -88,7 +72,6 @@ public class UsuarioController {
         dto.setCelular(req.getCelular());
         dto.setPrograma(req.getPrograma());
         dto.setRoles(Set.of(Rol.DOCENTE));
-        dto.setTipoDocente(req.getTipoDocente());
 
         return registrarUsuario(dto);
     }
@@ -162,9 +145,6 @@ public class UsuarioController {
             response.put("programa", usuario.getPrograma());
             response.put("roles", usuario.getRoles());
 
-            if (usuario.getTipoDocente() != null) {
-                response.put("tipoDocente", usuario.getTipoDocente());
-            }
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

@@ -1,7 +1,6 @@
 package co.edu.unicauca.usuarios.models;
 
 import co.edu.unicauca.usuarios.models.enums.Rol;
-import co.edu.unicauca.usuarios.models.enums.TipoDocente;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,10 +22,6 @@ public class Usuario {
     private String apellidos;
     private String celular;
     private String programa;
-
-    // Si el usuario tiene rol DOCENTE, este campo indica su tipo
-    @Enumerated(EnumType.STRING)
-    private TipoDocente tipoDocente;
 
     // Un usuario puede tener múltiples roles
     @ElementCollection(fetch = FetchType.EAGER)

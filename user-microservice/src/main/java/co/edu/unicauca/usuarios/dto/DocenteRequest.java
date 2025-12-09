@@ -1,6 +1,5 @@
 package co.edu.unicauca.usuarios.dto;
 
-import co.edu.unicauca.usuarios.models.enums.TipoDocente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -19,6 +18,4 @@ public class DocenteRequest {
     private String celular;
     @Schema(example = "INGENIERIA_SISTEMAS", requiredMode = Schema.RequiredMode.REQUIRED)
     private String programa;
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private TipoDocente tipoDocente;
 }

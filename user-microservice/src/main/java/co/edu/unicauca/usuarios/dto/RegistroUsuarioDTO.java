@@ -1,7 +1,6 @@
 package co.edu.unicauca.usuarios.dto;
 
 import co.edu.unicauca.usuarios.models.enums.Rol;
-import co.edu.unicauca.usuarios.models.enums.TipoDocente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -31,7 +30,4 @@ public class RegistroUsuarioDTO {
 
     @Schema(description = "Roles del usuario (mínimo 1)", requiredMode = Schema.RequiredMode.REQUIRED)
     private Set<Rol> roles = new HashSet<>();
-
-    @Schema(description = "Tipo de docente (solo si el usuario tiene rol DOCENTE)")
-    private TipoDocente tipoDocente;
 }
