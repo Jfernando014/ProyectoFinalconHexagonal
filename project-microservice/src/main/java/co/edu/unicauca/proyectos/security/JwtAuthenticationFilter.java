@@ -38,12 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (tokenProvider.validateToken(token)) {
                 String email = tokenProvider.getEmailFromToken(token);
-                String rol = tokenProvider.getRolFromToken(token);
+
+                // ✅ Lee TODOS los roles como LISTA
+                List<String> roles = tokenProvider.getRolesFromToken(token);
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                if (rol != null && !rol.isBlank()) {
-                    // El enum Rol en user-microservice tiene DOCENTE, ESTUDIANTE, COORDINADOR, JEFE_DEPARTAMENTO
-                    authorities.add(new SimpleGrantedAuthority("ROLE_" + rol));
+                for (String rol : roles) {
+                    authorities.add(new SimpleGrantedAuthority(rol)); // Sin prefijo
                 }
 
                 UsernamePasswordAuthenticationToken auth =
@@ -57,4 +58,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

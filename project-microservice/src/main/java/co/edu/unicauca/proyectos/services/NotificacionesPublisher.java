@@ -4,6 +4,7 @@ import co.edu.unicauca.proyectos.dto.FormatoASubidoEvent;
 import co.edu.unicauca.proyectos.dto.AnteproyectoSubidoEvent;
 import co.edu.unicauca.proyectos.dto.EvaluacionFormatoAEvent;
 import co.edu.unicauca.proyectos.dto.AsignacionEvaluadoresEvent;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,16 +23,16 @@ public class NotificacionesPublisher implements INotificacionesClient {
     @Value("${app.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${app.rabbitmq.rk.formatoA.subido}")
+    @Value("${app.rabbitmq.routing.formatoA.subido}")  // Changed: rk → routing
     private String rkFormatoASubido;
 
-    @Value("${app.rabbitmq.rk.formatoA.evaluado}")
+    @Value("${app.rabbitmq.routing.formatoA.evaluado}") // Changed: rk → routing
     private String rkFormatoAEvaluado;
 
-    @Value("${app.rabbitmq.rk.anteproyecto.subido}")
+    @Value("${app.rabbitmq.routing.anteproyecto.subido}") // Changed: rk → routing
     private String rkAnteproyectoSubido;
 
-    @Value("${app.rabbitmq.rk.evaluadores.asignados}")
+    @Value("${app.rabbitmq.routing.evaluadores.asignados}") // Added this line
     private String rkEvaluadoresAsignados;
 
     @Override

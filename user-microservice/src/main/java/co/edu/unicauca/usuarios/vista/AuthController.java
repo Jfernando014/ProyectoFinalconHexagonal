@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,23 +38,18 @@ public class AuthController {
         try {
             Usuario usuario = usuarioService.obtenerPorEmail(loginRequest.getEmail());
 
-            // Verificar contraseña
             if (!passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword())) {
                 return ResponseEntity.status(401).body(Map.of("error", "Credenciales inválidas"));
             }
 
-            // Obtener todos los roles del usuario
             Set<Rol> roles = usuario.getRoles();
 
-            // Convertir roles a lista de strings para el token (separados por coma)
-            String rolesString = roles.stream()
+            List<String> rolesList = roles.stream()
                     .map(Rol::name)
-                    .collect(Collectors.joining(","));
+                    .toList();
 
-            // Generar token con todos los roles
-            String token = tokenProvider.generateToken(usuario.getEmail(), rolesString);
+            String token = tokenProvider.generateToken(usuario.getEmail(), rolesList);
 
-            // Preparar respuesta
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
             response.put("email", usuario.getEmail());
