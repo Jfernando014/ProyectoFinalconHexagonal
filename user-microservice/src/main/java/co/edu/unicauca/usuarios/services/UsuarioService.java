@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -96,6 +96,11 @@ public class UsuarioService implements IUsuarioService {
         return usuario.getRoles();
     }
 
+    @Override
+    public List<Usuario> buscar(String texto) {
+        return usuarioRepository.findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCaseOrEmailContainsIgnoreCase(texto,texto,texto);
+    }
+
     // ---------- Util ----------
     private void validarUsuario(Usuario usuario) throws InvalidUserDataException, UserAlreadyExistsException {
         if (usuario.getEmail() == null || !usuario.getEmail().endsWith("@unicauca.edu.co")) {
@@ -112,7 +117,6 @@ public class UsuarioService implements IUsuarioService {
             throw new InvalidUserDataException("El usuario debe tener al menos un rol");
         }
     }
-
     private void normalizar(Usuario u) {
         if (u.getNombres() != null) u.setNombres(u.getNombres().trim());
         if (u.getApellidos() != null) u.setApellidos(u.getApellidos().trim());

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +22,17 @@ public class UsuarioController {
 
     public UsuarioController(IUsuarioService usuarioService) {
         this.usuarioService = usuarioService;
+    }
+
+    @GetMapping("/search")
+    public List<Map<String, Object>> search(@RequestParam("q") String q) {
+        return usuarioService.buscar(q)
+                .stream()
+                .map(u -> Map.<String, Object>of(
+                        "email", u.getEmail(),
+                        "nombreCompleto", u.getNombres() + " " + u.getApellidos()
+                ))
+                .toList();
     }
 
     // ------- Registro Único para múltiples roles -------
