@@ -29,6 +29,8 @@ public interface IProyectoServiceFacade {
 
     List<ProyectoGrado> obtenerProyectosPorEstudiante(String email);
 
+    List<ProyectoGrado> obtenerProyectosPorDocente(String emailDocente);
+
     List<ProyectoGrado> obtenerAnteproyectosPorJefe(String emailJefe);
 
     // Nuevos métodos para los endpoints faltantes
