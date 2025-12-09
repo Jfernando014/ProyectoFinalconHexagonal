@@ -1,5 +1,6 @@
 package co.edu.unicauca.proyectos.vista;
 
+import co.edu.unicauca.proyectos.dto.FormatoAInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -118,6 +119,42 @@ public class ProyectoController {
     }
 
     @Operation(
+            summary = "Evaluar Formato A del proyecto",
+            description = """
+                    Evalúa específicamente el Formato A de un proyecto de grado.
+                    Cambia el estado interno del proyecto (patrón State) a aprobado o rechazado
+                    y envía la notificación correspondiente al estudiante, director, codirector y coordinador.
+                    """
+    )
+    @PreAuthorize("hasRole('COORDINADOR')")
+    @PostMapping("/{idProyecto}/formatoA/evaluar")
+    public ResponseEntity<?> evaluarFormatoA(
+            @PathVariable("idProyecto") Long idProyecto,
+            @RequestParam("aprobado") boolean aprobado,
+            @RequestParam("observaciones") String observaciones
+    ) {
+        try {
+            ProyectoGrado p = facade.evaluarFormatoA(idProyecto, aprobado, observaciones);
+
+            java.util.Map<String, Object> resp = new java.util.HashMap<>();
+            resp.put("mensaje", "Formato A evaluado");
+            resp.put("idProyecto", p.getId());
+            resp.put("aprobado", aprobado);
+            resp.put("observaciones", observaciones);
+            resp.put("estadoActual", p.getEstadoActual());
+            resp.put("numeroIntento", p.getNumeroIntento());
+
+            return ResponseEntity.ok(resp);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(java.util.Map.of("error", "Error al evaluar Formato A: " + e.getMessage()));
+        }
+    }
+
+    @Operation(
             summary = "Subir anteproyecto",
             description = "Permite al docente subir el archivo PDF del anteproyecto una vez el Formato A ha sido aprobado. " +
                     "Envía notificación al jefe de departamento para asignar evaluadores."
@@ -145,6 +182,23 @@ public class ProyectoController {
             return ResponseEntity.status(404).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
+
+    @Operation(
+            summary = "Obtener Formatos A por estudiante",
+            description = "Devuelve la lista de Formatos A asociados a los proyectos de un estudiante (por email)."
+    )
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @GetMapping("/estudiante/{email}/formatoA")
+    public ResponseEntity<?> obtenerFormatosAPorEstudiante(@PathVariable String email) {
+        try {
+            List<FormatoAInfoDTO> formatos = facade.obtenerFormatosAPorEmail(email);
+            return ResponseEntity.ok(formatos);
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
 
     @Operation(
             summary = "Obtener anteproyectos para evaluación (Jefe de Departamento)",

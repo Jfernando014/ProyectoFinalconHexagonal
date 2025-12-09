@@ -12,6 +12,7 @@ import co.edu.unicauca.proyectos.dto.AsignacionEvaluadoresEvent;
 import co.edu.unicauca.proyectos.services.evaluacion.EvaluadorAprobacion;
 import co.edu.unicauca.proyectos.services.evaluacion.EvaluadorRechazo;
 import co.edu.unicauca.proyectos.models.estados.FormatoAAprobadoState;
+import co.edu.unicauca.proyectos.dto.FormatoAInfoDTO;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -273,6 +274,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
     }
 
     // Soporte directo a evaluaciones de estado interno
+    @Override
     @Transactional
     public ProyectoGrado evaluarFormatoA(Long idProyecto, boolean aprobado, String observaciones){
         ProyectoGrado p = proyectoRepository.findById(idProyecto)
@@ -299,4 +301,27 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
     public ProyectoGrado buscarProyecto(Long id){
         return proyectoRepository.findById(id).orElseThrow();
     }
+
+    @Override
+    public List<FormatoAInfoDTO> obtenerFormatosAPorEmail(String emailEstudiante) {
+        // 1. Buscar proyectos donde el estudiante1 tenga ese email
+        List<ProyectoGrado> proyectos = proyectoService.findByEstudiante1Email(emailEstudiante);
+
+        // 2. Filtrar solo los que tengan Formato A ya subido (token no nulo)
+        return proyectos.stream()
+                .filter(p -> p.getFormatoAToken() != null && !p.getFormatoAToken().isBlank())
+                .map(p -> {
+                    FormatoAInfoDTO dto = new FormatoAInfoDTO();
+                    dto.setIdProyecto(p.getId());
+                    dto.setTituloProyecto(p.getTitulo());
+                    dto.setEstudiante1Email(p.getEstudiante1Email());
+                    dto.setEstudiante2Email(p.getEstudiante2Email());
+                    dto.setFormatoAToken(p.getFormatoAToken());
+                    dto.setFechaFormatoA(p.getFechaFormatoA());
+                    return dto;
+                })
+                .toList();
+    }
+
+
 }

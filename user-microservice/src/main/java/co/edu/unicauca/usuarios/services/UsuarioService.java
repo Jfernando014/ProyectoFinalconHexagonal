@@ -1,5 +1,6 @@
 package co.edu.unicauca.usuarios.services;
 
+import co.edu.unicauca.usuarios.dto.UsuarioDetalleDTO;
 import co.edu.unicauca.usuarios.models.Usuario;
 import co.edu.unicauca.usuarios.models.enums.Rol;
 import co.edu.unicauca.usuarios.repository.UsuarioRepository;
@@ -11,7 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -96,6 +98,11 @@ public class UsuarioService implements IUsuarioService {
         return usuario.getRoles();
     }
 
+    @Override
+    public List<Usuario> buscar(String texto) {
+        return usuarioRepository.findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCaseOrEmailContainsIgnoreCase(texto,texto,texto);
+    }
+
     // ---------- Util ----------
     private void validarUsuario(Usuario usuario) throws InvalidUserDataException, UserAlreadyExistsException {
         if (usuario.getEmail() == null || !usuario.getEmail().endsWith("@unicauca.edu.co")) {
@@ -125,4 +132,34 @@ public class UsuarioService implements IUsuarioService {
         if (usuario == null) return false;
         return passwordEncoder.matches(password, usuario.getPassword());
     }
+
+    // ---------- NUEVO: detalle por email ----------
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UsuarioDetalleDTO> obtenerDetallePorEmail(String email) {
+        return usuarioRepository
+                .findByEmail(email)
+                .map(this::mapToDetalleDTO);
+    }
+
+    /**
+     * Mapea la entidad Usuario al DTO UsuarioDetalleDTO.
+     **/
+    private UsuarioDetalleDTO mapToDetalleDTO(Usuario u) {
+        String rolPrincipal = null;
+        if (u.getRoles() != null && !u.getRoles().isEmpty()) {
+            rolPrincipal = u.getRoles().iterator().next().name();
+        }
+
+        return new UsuarioDetalleDTO(
+                u.getNombres(),
+                u.getApellidos(),
+                u.getEmail(),
+                u.getCelular(),
+                rolPrincipal,
+                u.getPrograma()
+        );
+    }
+
+
 }

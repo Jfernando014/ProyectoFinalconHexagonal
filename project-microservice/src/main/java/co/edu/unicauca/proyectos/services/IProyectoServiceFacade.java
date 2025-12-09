@@ -1,5 +1,6 @@
 package co.edu.unicauca.proyectos.services;
 
+import co.edu.unicauca.proyectos.dto.FormatoAInfoDTO;
 import co.edu.unicauca.proyectos.models.ProyectoGrado;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,5 +40,10 @@ public interface IProyectoServiceFacade {
                                          String jefeDepartamentoEmail,
                                          String evaluador1Email,
                                          String evaluador2Email);
+
+    ProyectoGrado evaluarFormatoA(Long idProyecto, boolean aprobado, String observaciones);
+
+    List<FormatoAInfoDTO> obtenerFormatosAPorEmail(String emailEstudiante);
+
 }
 
