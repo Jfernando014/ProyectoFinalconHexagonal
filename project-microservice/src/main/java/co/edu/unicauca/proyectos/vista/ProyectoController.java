@@ -181,6 +181,21 @@ public class ProyectoController {
             return ResponseEntity.status(404).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
+    @Operation(
+            summary = "Obtener evaluaciones asignadas a un docente",
+            description = "Recupera todos los proyectos donde el docente es evaluador."
+    )
+    @PreAuthorize("hasAuthority('DOCENTE')")
+    @GetMapping("/evaluador/{email}")
+    public ResponseEntity<?> obtenerPorEvaluador(@PathVariable String email) {
+        try {
+            List<ProyectoGrado> proyectos = facade.obtenerProyectosPorEvaluador(email);
+            return ResponseEntity.ok(proyectos);
+        } catch (Exception e) {
+            return ResponseEntity.status(404)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
 
     @Operation(
             summary = "Obtener Formatos A por estudiante",
@@ -213,6 +228,7 @@ public class ProyectoController {
                     .body(java.util.Map.of("error", e.getMessage()));
         }
     }
+
 
 
 

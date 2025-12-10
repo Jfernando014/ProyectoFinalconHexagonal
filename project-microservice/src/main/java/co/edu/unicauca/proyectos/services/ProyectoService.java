@@ -75,5 +75,9 @@ public class ProyectoService implements IProyectoService {
                 "EN_TERCERA_EVALUACION_FORMATO_A"
         ));
     }
+    @Override
+    public List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo) {
+        return proyectoRepository.findByEvaluador1EmailOrEvaluador2Email(correo, correo);
+    }
 
 }
