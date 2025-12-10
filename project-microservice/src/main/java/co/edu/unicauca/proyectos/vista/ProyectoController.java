@@ -198,6 +198,23 @@ public class ProyectoController {
         }
     }
 
+    @Operation(
+            summary = "Obtener proyectos por docente",
+            description = "Recupera todos los proyectos donde el docente es director."
+    )
+    @PreAuthorize("hasRole('DOCENTE')")
+    @GetMapping("/docente/{email}")
+    public ResponseEntity<?> obtenerPorDocente(@PathVariable String email) {
+        try {
+            List<ProyectoGrado> proyectos = facade.obtenerProyectosPorDocente(email);
+            return ResponseEntity.ok(proyectos);
+        } catch (Exception e) {
+            return ResponseEntity.status(404)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
+
 
     @Operation(
             summary = "Obtener anteproyectos para evaluación (Jefe de Departamento)",
