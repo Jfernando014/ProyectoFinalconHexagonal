@@ -80,8 +80,11 @@ public class ProyectoGrado {
     public String getEstadoActual() { return estadoActual; }
 
     public void evaluar(boolean aprobado, String observaciones) {
-        if (estado == null) setEstado(fromNombre(estadoActual));
-        this.estado.evaluar(this, aprobado, observaciones);
+        if (estado == null)
+            if(aprobado){
+                setEstado(fromNombre(new FormatoAAprobadoState().getNombreEstado()));
+                this.estado.evaluar(this, aprobado, observaciones);
+            }
     }
 
     public void reintentar() {

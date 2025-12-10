@@ -3,7 +3,9 @@ package co.edu.unicauca.usuarios.models;
 import co.edu.unicauca.usuarios.models.enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,8 @@ import java.util.Set;
 @Table(name = "usuarios")
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 public class Usuario {
     @Id
     @Column(unique = true, nullable = false)

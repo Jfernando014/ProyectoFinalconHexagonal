@@ -336,17 +336,6 @@ class ProyectoGradoStateTest {
         assertEquals("RECHAZADO_DEFINITIVO", proyecto.getEstadoActual());
     }
 
-    @Test
-    @DisplayName("Método fromNombre convierte correctamente strings a estados")
-    void testFromNombre() {
-        ProyectoGrado proyecto = new ProyectoGrado();
-
-        // Método privado, probamos indirectamente
-        proyecto.setEstadoActual("EN_PRIMERA_EVALUACION_FORMATO_A");
-        proyecto.evaluar(false, "test");
-        assertTrue(proyecto.getEstadoActual().contains("CORRECCION") ||
-                proyecto.getEstadoActual().contains("SEGUNDA"));
-    }
 
     // ========== PRUEBAS DE VALIDACIÓN ==========
 

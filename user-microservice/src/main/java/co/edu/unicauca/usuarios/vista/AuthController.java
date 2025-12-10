@@ -6,6 +6,13 @@ import co.edu.unicauca.usuarios.models.enums.Rol;
 import co.edu.unicauca.usuarios.security.JwtTokenProvider;
 import co.edu.unicauca.usuarios.services.IUsuarioService;
 import co.edu.unicauca.usuarios.util.InvalidUserDataException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "API para autenticación de usuarios y generación de tokens JWT")
 public class AuthController {
 
     private final IUsuarioService usuarioService;
@@ -34,6 +41,54 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(
+            summary = "Iniciar sesión",
+            description = "Autentica un usuario y genera un token JWT"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Autenticación exitosa",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = """
+                    {
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "email": "usuario@unicauca.edu.co",
+                        "nombres": "Juan",
+                        "apellidos": "Pérez",
+                        "roles": ["ESTUDIANTE", "DOCENTE"]
+                    }
+                    """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Credenciales inválidas",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = """
+                    {"error": "Credenciales inválidas"}
+                    """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno del servidor"
+            )
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Credenciales de acceso",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = LoginRequest.class),
+                    examples = @ExampleObject(value = """
+                {
+                    "email": "usuario@unicauca.edu.co",
+                    "password": "password123"
+                }
+                """)
+            )
+    )
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             Usuario usuario = usuarioService.obtenerPorEmail(loginRequest.getEmail());

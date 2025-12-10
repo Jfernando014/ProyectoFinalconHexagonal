@@ -234,10 +234,10 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
             ProyectoGrado p = proyectoService.obtenerPorId(idProyecto);
             if (p == null) return ResponseEntity.status(404).body(Map.of("error", "Proyecto no encontrado"));
 
-            if (!(p.getEstado() instanceof FormatoAAprobadoState)) {
+            if (!(p.getEstadoActual().equals(new FormatoAAprobadoState().getNombreEstado()))) {
                 return ResponseEntity.badRequest().body(Map.of(
                         "error", "Solo se puede subir anteproyecto si el Formato A está aprobado.",
-                        "estadoActual", p.getEstado().getClass().getSimpleName()
+                        "estadoActual", p.getEstadoActual().getClass().getSimpleName()
                 ));
             }
 
