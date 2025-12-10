@@ -12,4 +12,6 @@ public interface IProyectoService {
     List<ProyectoGrado> obtenerFormatoAPendientes();
     List<ProyectoGrado> obtenerTodos();
     ProyectoGrado guardar(ProyectoGrado proyecto);
+    List<ProyectoGrado> obtenerFormatoARechazados();
+    List<ProyectoGrado> obtenerFormatoAAprobados();
 }

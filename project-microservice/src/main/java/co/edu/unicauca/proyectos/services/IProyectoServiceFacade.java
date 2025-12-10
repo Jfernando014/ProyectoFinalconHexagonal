@@ -18,6 +18,9 @@ public interface IProyectoServiceFacade {
             MultipartFile carta
     );
     List<ProyectoGrado> obtenerFormatoAPendientes();
+    public List<ProyectoGrado> obtenerFormatoARechazados();
+    public List<ProyectoGrado> obtenerFormatoAAprobados();
+
     ProyectoGrado crearProyecto(ProyectoGrado proyecto);
     
     void evaluarProyecto(Long id, boolean aprobado, String observaciones);

@@ -107,6 +107,16 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         return proyectoService.obtenerFormatoAPendientes();
     }
 
+    @Override
+    public List<ProyectoGrado> obtenerFormatoARechazados() {
+        return proyectoService.obtenerFormatoARechazados();
+    }
+
+    @Override
+    public List<ProyectoGrado> obtenerFormatoAAprobados() {
+        return proyectoService.obtenerFormatoAAprobados();
+    }
+
 
     private void validarUsuario(String email, String rolEsperado) {
         Map<String, Object> r = userClient.validarUsuario(email);

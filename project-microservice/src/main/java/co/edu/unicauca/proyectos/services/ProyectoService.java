@@ -50,6 +50,19 @@ public class ProyectoService implements IProyectoService {
     }
 
     @Override
+    public List<ProyectoGrado> obtenerFormatoARechazados() {
+        return proyectoRepository.findByEstadoActualIn(List.of(
+                "FORMATO_A_RECHAZADO",
+                "RECHAZADO_DEFINITIVO"
+        ));
+    }
+
+    @Override
+    public List<ProyectoGrado> obtenerFormatoAAprobados() {
+        return proyectoRepository.findByEstadoActual("FORMATO_A_APROBADO");
+    }
+
+    @Override
     public List<ProyectoGrado> findByAnteproyectoTokenIsNotNull() {
         return repo.findByAnteproyectoTokenIsNotNull();
     }

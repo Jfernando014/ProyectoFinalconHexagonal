@@ -279,5 +279,15 @@ public class ProyectoController {
     public List<ProyectoGrado> obtenerFormatoAPendientes() {
         return facade.obtenerFormatoAPendientes();
     }
+    @PreAuthorize("hasAuthority('COORDINADOR')")
+    @GetMapping("/formatoA/rechazados")
+    public List<ProyectoGrado> obtenerFormatoARechazados() {
+        return facade.obtenerFormatoARechazados();
+    }
+    @PreAuthorize("hasAuthority('COORDINADOR')")
+    @GetMapping("/formatoA/aprobados")
+    public List<ProyectoGrado> obtenerFormatoAAprobados() {
+        return facade.obtenerFormatoAAprobados();
+    }
 
 }
