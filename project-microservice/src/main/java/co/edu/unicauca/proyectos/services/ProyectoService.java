@@ -76,7 +76,6 @@ public class ProyectoService implements IProyectoService {
         ));
     }
 
-
     @Override
     public List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo) {
         return proyectoRepository.findByEvaluador1EmailOrEvaluador2Email(correo, correo);

@@ -12,5 +12,6 @@ public interface ProyectoRepository extends JpaRepository<ProyectoGrado, Long> {
     List<ProyectoGrado> findByAnteproyectoTokenIsNotNull();
     List<ProyectoGrado> findByEstadoActualIn(List<String> estados);
     List<ProyectoGrado> findByEstadoActual(String estado);
+
     List<ProyectoGrado> findByEvaluador1EmailOrEvaluador2Email(String evaluador1Email, String evaluador2Email);
 }
