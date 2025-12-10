@@ -111,7 +111,9 @@ public class ProyectoGrado {
     }
 
     // Adaptadores de compatibilidad
-    public Integer getNumeroIntento() { return this.numeroIntento; }
+    public Integer getNumeroIntento() {
+        if(this.numeroIntento == null) return 0;
+        return this.numeroIntento; }
     public void setNumeroIntento(int n) { this.numeroIntento = n; }
 
     // Si en algún código se usa get/setIntentos, mantén estos proxies:
