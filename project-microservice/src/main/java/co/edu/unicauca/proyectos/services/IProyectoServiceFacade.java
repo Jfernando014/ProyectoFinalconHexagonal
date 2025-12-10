@@ -30,9 +30,13 @@ public interface IProyectoServiceFacade {
     // Método actualizado: ahora recibe el archivo PDF del anteproyecto
     ResponseEntity<?> subirAnteproyecto(Long idProyecto, String jefeDepartamentoEmail, MultipartFile anteproyectoPdf);
 
+
     List<ProyectoGrado> obtenerProyectosPorEstudiante(String email);
 
     List<ProyectoGrado> obtenerProyectosPorDocente(String emailDocente);
+
+
+    List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo);
 
     List<ProyectoGrado> obtenerAnteproyectosPorJefe(String emailJefe);
 
