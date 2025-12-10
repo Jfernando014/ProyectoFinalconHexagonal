@@ -121,9 +121,11 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
     private void validarUsuario(String email, String rolEsperado) {
         Map<String, Object> r = userClient.validarUsuario(email);
         Boolean existe = (Boolean) r.get("existe");
-        String rol = (String) r.get("rol");
+        @SuppressWarnings("unchecked")
+        List<String> roles = (List<String>) r.get("roles");
         if (!Boolean.TRUE.equals(existe)) throw new RuntimeException("El usuario " + email + " no existe.");
-        if (!rolEsperado.equals(rol)) throw new RuntimeException("El usuario " + email + " no es " + rolEsperado + ".");
+        if (roles == null || !roles.contains(rolEsperado))
+            throw new RuntimeException("El usuario " + email + " no es " + rolEsperado + ".");
     }
 
     public ResponseEntity<?> asignarEvaluadores(

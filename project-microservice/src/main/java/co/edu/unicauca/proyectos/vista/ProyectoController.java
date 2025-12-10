@@ -72,7 +72,7 @@ public class ProyectoController {
             ProyectoGrado resultado = facade.crearProyecto(proyecto);
             return ResponseEntity.ok(resultado);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("{\"error\": \"Error interno\"}");
+            return ResponseEntity.status(500).body("{\"error\": \"Error interno\"}" + e.getMessage());
         }
     }
 
@@ -202,7 +202,7 @@ public class ProyectoController {
             summary = "Obtener proyectos por docente",
             description = "Recupera todos los proyectos donde el docente es director."
     )
-    @PreAuthorize("hasRole('DOCENTE')")
+    @PreAuthorize("hasAuthority('DOCENTE')")
     @GetMapping("/docente/{email}")
     public ResponseEntity<?> obtenerPorDocente(@PathVariable String email) {
         try {
