@@ -35,6 +35,7 @@ public interface IProyectoServiceFacade {
 
     List<ProyectoGrado> obtenerProyectosPorDocente(String emailDocente);
 
+
     List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo);
 
     List<ProyectoGrado> obtenerAnteproyectosPorJefe(String emailJefe);

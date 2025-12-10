@@ -353,6 +353,7 @@ public class ProyectoServiceFacade implements IProyectoServiceFacade {
         // Mis proyectos = proyectos donde soy director
         return proyectoRepository.findByDirectorEmail(emailDocente);
     }
+
     @Override
     public List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo) {
         return proyectoService.obtenerProyectosPorEvaluador(correo);

@@ -14,5 +14,6 @@ public interface IProyectoService {
     ProyectoGrado guardar(ProyectoGrado proyecto);
     List<ProyectoGrado> obtenerFormatoARechazados();
     List<ProyectoGrado> obtenerFormatoAAprobados();
+
     List<ProyectoGrado> obtenerProyectosPorEvaluador(String correo);
 }
